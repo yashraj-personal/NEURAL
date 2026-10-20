@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>NEXUS-9 // Autonomous AI Neural Core & Architecture</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&family=Orbitron:wght@600;800;900&family=Space+Grotesk:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+<!-- Three.js + OrbitControls -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+<style>
+/* ==========================================================================
+   CSS VARIABLES & HIGH-TECH LUXURY PALETTES
+   ========================================================================== */
+:root {
+    --primary: #00f0ff;
+    --primary-glow: rgba(0, 240, 255, 0.4);
+    --primary-dim: rgba(0, 240, 255, 0.12);
+    --accent: #a855f7;
+    --accent-glow: rgba(168, 85, 247, 0.45);
+    --gold: #eab308;
+    --bg-dark: #04060a;
+    --card-bg: rgba(8, 12, 22, 0.82);
+    --border-glow: rgba(0, 240, 255, 0.22);
+    --text-main: #f8fafc;
+    --text-muted: #64748b;
+    --terminal-green: #10b981;
+}
+
+[data-mode="fintech"] {
+    --primary: #10b981;
+    --primary-glow: rgba(16, 185, 129, 0.4);
+    --primary-dim: rgba(16, 185, 129, 0.12);
+    --accent: #00f0ff;
+    --border-glow: rgba(16, 185, 129, 0.25);
+    --card-bg: rgba(6, 18, 14, 0.82);
+}
+
+[data-mode="fullstack"] {
+    --primary: #f59e0b;
+    --primary-glow: rgba(245, 158, 11, 0.4);
+    --primary-dim: rgba(245, 158, 11, 0.12);
+    --accent: #ec4899;
+    --border-glow: rgba(245, 158, 11, 0.25);
+    --card-bg: rgba(20, 12, 6, 0.82);
+}
+
+/* ==========================================================================
+   RESET & FOUNDATION
+   ========================================================================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    height: 100dvh;
+    overflow: hidden;
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+    font-family: 'Space Grotesk', -apple-system, sans-serif;
+    user-select: none;
+    -webkit-font-smoothing: antialiased;
+    transition: background-color 0.8s ease;
+}
+
+#webglCanvas {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    cursor: grab;
+}
+
+#webglCanvas:active {
+    cursor: grabbing;
+}
+
+/* Cyber Background Grid & Vignette */
+.cyberGrid {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 2;
+    background-image: 
+        linear-gradient(rgba(0, 240, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 240, 255, 0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    background-position: center center;
+}
+
+.ambientVignette {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 3;
+    background: radial-gradient(circle at center, transparent 35%, rgba(4,6,10,0.85) 100%);
+}
+
+/* ==========================================================================
+   TOP EXECUTIVE HUD
+   ========================================================================== */
+.topHeader {
+    position: fixed;
+    top: 18px;
+    left: 24px;
+    right: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 20;
+    pointer-events: none;
+}
+
+.systemBrand {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: var(--card-bg);
+    border: 1px solid var(--border-glow);
+    padding: 8px 20px;
+    border-radius: 12px;
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    box-shadow: 0 0 25px rgba(0,0,0,0.6);
+    pointer-events: auto;
+}
+
+.corePulsar {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--primary);
+    box-shadow: 0 0 12px var(--primary);
+    animation: corePulse 1.6s infinite ease-in-out;
+}
+
+@keyframes corePulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(0.85); opacity: 0.45; }
+}
+
+.brandTitles {
+    display: flex;
+    flex-direction: column;
+}
+
+.brandMain {
+    font-family: 'Orbitron', monospace;
+    font-size: 14px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    color: #ffffff;
+}
+
+.brandSub {
+    font-family: 'Fira Code', monospace;
+    font-size: 10px;
+    color: var(--text-muted);
+    letter-spacing: 0.06em;
+}
+
+.hudRightGroup {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    pointer-events: auto;
+}
+
+.hudStatsBadge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--card-bg);
+    border: 1px solid var(--border-glow);
+    padding: 8px 16px;
+    border-radius: 12px;
+    font-family: 'Fira Code', monospace;
+    font-size: 11.5px;
+    color: var(--primary);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+}
+
+.hudActionBtn {
+    background: var(--card-bg);
+    border: 1px solid var(--border-glow);
+    color: var(--text-main);
+    padding: 8px 16px;
+    border-radius: 12px;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.hudActionBtn:hover {
+    border-color: var(--primary);
+    box-shadow: 0 0 20px var(--primary-glow);
+    transform: translateY(-2px);
+}
+
+/* ==========================================================================
+   SIDE PANELS (TELEMETRY & AUTONOMOUS AGENT STREAM)
+   ========================================================================== */
+.telemetryPanel {
+    position: fixed;
+    top: 90px;
+    left: 24px;
+    width: 280px;
+    background: var(--card-bg);
+    border: 1px solid var(--border-glow);
+    border-radius: 16px;
+    padding: 20px 18px;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow: 0 0 35px rgba(0,0,0,0.5);
+    z-index: 15;
+    pointer-events: auto;
+    animation: slideInLeft 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes slideInLeft {
+    from { opacity: 0; transform: translateX(-30px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+.panelHeading {
+    font-family: 'Fira Code', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    color: var(--primary);
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.telemetryRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    font-size: 12.5px;
+}
+
+.metricLabel {
+    color: var(--text-muted);
+    font-size: 11.5px;
+}
+
+.metricVal {
+    font-family: 'Fira Code', monospace;
+    font-weight: 600;
+    color: #ffffff;
+}
+
+.meterBarBg {
+    width: 100%;
+    height: 4px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 100px;
+    overflow: hidden;
+    margin-top: 4px;
+}
+
+.meterBarFill {
+    height: 100%;
+    background: var(--primary);
+    box-shadow: 0 0 10px var(--primary);
+    transition: width 0.4s ease;
+}
+
+/* Right Stream Terminal */
+.agentStreamPanel {
+    position: fixed;
+    top: 90px;
+    right: 24px;
+    width: 320px;
+    background: var(--card-bg);
+    border: 1px solid var(--border-glow);
+    border-radius: 16px;
+    padding: 20px 18px;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow: 0 0 35px rgba(0,0,0,0.5);
+    z-index: 15;
+    pointer-events: auto;
+    animation: slideInRight 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes slideInRight {
+    from { opacity: 0; transform: translateX(30px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+.terminalOutput {
+    font-family: 'Fira Code', monospace;
+    font-size: 11px;
+    line-height: 1.6;
+    color: #94a3b8;
+    height: 180px;
+    overflow-y: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 6px;
+}
+
+.terminalLog {
+    animation: fadeInLog 0.3s ease;
+    word-break: break-all;
+}
+
+@keyframes fadeInLog {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.tagSuccess { color: var(--terminal-green); }
+.tagAgent { color: var(--primary); font-weight: 600; }
+.tagWarn { color: var(--gold); }
+
+/* ==========================================================================
+   BOTTOM COMMAND BAR & ARCHITECTURE CONTROLS
+   ========================================================================== */
+.bottomControlDeck {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    z-index: 25;
+    pointer-events: auto;
+    width: max-content;
+    max-width: 94vw;
+}
+
+.deckBtn {
+    background: var(--card-bg);
+    border: 1px solid var(--border-glow);
+    color: var(--text-main);
+    padding: 13px 22px;
+    border-radius: 14px;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 12.5px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+}
+
+.deckBtn:hover {
+    border-color: var(--primary);
+    background: var(--primary-dim);
+    color: #ffffff;
+    box-shadow: 0 0 25px var(--primary-glow);
+    transform: translateY(-2px);
+}
+
+.deckBtn:active {
+    transform: translateY(1px);
+}
+
+.deckBtn.primaryAction {
+    background: var(--primary);
+    color: #04060a;
+    border-color: var(--primary);
+    box-shadow: 0 0 30px var(--primary-glow);
+}
+
+.deckBtn.primaryAction:hover {
+    box-shadow: 0 0 45px var(--primary);
+    background: #ffffff;
+}
+
+/* ==========================================================================
+   MODAL / CONTACT WITH THE ARCHITECT
+   ========================================================================== */
+.modalBackdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(2, 4, 8, 0.78);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 80;
+    padding: 20px;
+}
+
+.modalBackdrop.active {
+    display: flex;
+}
+
+.executiveCard {
+    width: min(520px, 94vw);
+    background: var(--card-bg);
+    border: 1px solid var(--primary);
+    border-radius: 24px;
+    padding: 36px 30px;
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    box-shadow: 0 0 50px var(--primary-glow);
+    text-align: center;
+    position: relative;
+    animation: scaleModal 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes scaleModal {
+    0% { transform: scale(0.92) translateY(20px); opacity: 0; }
+    100% { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+.closeBtn {
+    position: absolute;
+    top: 18px;
+    right: 20px;
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 22px;
+    cursor: pointer;
+}
+
+.closeBtn:hover { color: #ffffff; }
+
+.modalTag {
+    font-family: 'Fira Code', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: var(--primary);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+}
+
+.modalTitle {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 26px;
+    font-weight: 900;
+    color: #ffffff;
+    margin-bottom: 8px;
+}
+
+.modalDesc {
+    font-size: 14px;
+    color: #94a3b8;
+    margin-bottom: 24px;
+    line-height: 1.55;
+}
+
+.contactDirectBtns {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+}
+
+.directLink {
+    padding: 14px 20px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-glow);
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 13.5px;
+    font-weight: 600;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.25s ease;
+}
+
+.directLink:hover {
+    background: var(--primary-dim);
+    border-color: var(--primary);
+    box-shadow: 0 0 20px var(--primary-glow);
+    transform: translateY(-2px);
+}
+
+/* Toast */
+.systemToast {
+    position: fixed;
+    top: 80px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-20px);
+    background: var(--card-bg);
+    border: 1px solid var(--primary);
+    box-shadow: 0 0 25px var(--primary-glow);
+    padding: 10px 24px;
+    border-radius: 100px;
+    font-family: 'Fira Code', monospace;
+    font-size: 12px;
+    color: #ffffff;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: 100;
+}
+
+.systemToast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+/* Responsive adjustments */
+@media (max-width: 900px) {
+    .telemetryPanel { display: none; }
+    .agentStreamPanel { display: none; }
+    .topHeader { left: 14px; right: 14px; top: 12px; }
+    .bottomControlDeck { bottom: 16px; gap: 8px; }
+    .deckBtn { padding: 11px 16px; font-size: 11px; }
+}
+</style>
+</head>
+
+<body>
+
+<!-- WebGL 3D Canvas -->
+<canvas id="webglCanvas"></canvas>
+<div class="cyberGrid"></div>
+<div class="ambientVignette"></div>
+
+<!-- Top Executive HUD -->
+<header class="topHeader">
+    <div class="systemBrand">
+        <div class="corePulsar"></div>
+        <div class="brandTitles">
+            <span class="brandMain">NEXUS-9 // AI CORE</span>
+            <span class="brandSub">ARCHITECTED BY ALESSIO SABATINO</span>
+        </div>
+    </div>
+
+    <div class="hudRightGroup">
+        <div class="hudStatsBadge">
+            <span>FPS:</span> <strong id="fpsCounter">60</strong>
+            <span style="margin-left: 8px; color: var(--terminal-green);">● SYNC 100%</span>
+        </div>
+        <button class="hudActionBtn" id="soundBtn">
+            <span id="soundIcon">🔊</span> SOUND
+        </button>
+        <button class="hudActionBtn" id="contactBtn">
+            💬 CONNECT
+        </button>
+    </div>
+</header>
+
+<!-- Left Telemetry Panel -->
+<aside class="telemetryPanel">
+    <div class="panelHeading">
+        <span>CORE TELEMETRY</span>
+        <span style="color: var(--primary);">LIVE</span>
+    </div>
+
+    <div class="telemetryRow">
+        <span class="metricLabel">TOKEN VELOCITY</span>
+        <span class="metricVal" id="tokVel">4,850 tok/s</span>
+    </div>
+    <div class="meterBarBg"><div class="meterBarFill" style="width: 88%;"></div></div>
+
+    <div class="telemetryRow" style="margin-top: 14px;">
+        <span class="metricLabel">DETERMINISTIC ACCURACY</span>
+        <span class="metricVal">99.98%</span>
+    </div>
+    <div class="meterBarBg"><div class="meterBarFill" style="width: 99%;"></div></div>
+
+    <div class="telemetryRow" style="margin-top: 14px;">
+        <span class="metricLabel">EDGE LATENCY (ROMA/EU)</span>
+        <span class="metricVal" id="latencyVal">12 ms</span>
+    </div>
+    <div class="meterBarBg"><div class="meterBarFill" style="width: 25%;"></div></div>
+
+    <div class="telemetryRow" style="margin-top: 14px;">
+        <span class="metricLabel">SWARM ORCHESTRATION</span>
+        <span class="metricVal">16 ACTIVE AGENTS</span>
+    </div>
+    <div class="meterBarBg"><div class="meterBarFill" style="width: 80%;"></div></div>
+</aside>
+
+<!-- Right Autonomous Agent Log Stream -->
+<aside class="agentStreamPanel">
+    <div class="panelHeading">
+        <span>AGENTIC THOUGHT STREAM</span>
+        <span style="color: var(--terminal-green);">ONLINE</span>
+    </div>
+    <div class="terminalOutput" id="terminalLogs">
+        <div class="terminalLog"><span class="tagAgent">[NEXUS]</span> Substrate initialized.</div>
+        <div class="terminalLog"><span class="tagSuccess">[VECTOR]</span> 2.4M embeddings indexed.</div>
+        <div class="terminalLog"><span class="tagAgent">[AGNT-03]</span> Validating edge runtime.</div>
+    </div>
+</aside>
+
+<!-- Bottom Architecture Command Deck -->
+<footer class="bottomControlDeck">
+    <button class="deckBtn primaryAction" id="explodeBtn">
+        🔬 Explode 3D Layers
+    </button>
+    <button class="deckBtn" id="overclockBtn">
+        ⚡ Overclock Core
+    </button>
+    <button class="deckBtn" id="modeBtn">
+        🔄 Mode: AI Engine
+    </button>
+</footer>
+
+<!-- Executive Contact Modal -->
+<div class="modalBackdrop" id="contactModal">
+    <div class="executiveCard">
+        <button class="closeBtn" id="closeModalBtn">&times;</button>
+        <div class="modalTag">ENTERPRISE & STRATEGY</div>
+        <h2 class="modalTitle">Alessio Sabatino</h2>
+        <p class="modalDesc">
+            AI Systems Builder & Business Strategist. Ready to turn vision into scalable high-performance architecture.
+        </p>
+
+        <div class="contactDirectBtns">
+            <a href="mailto:alessio.sabatino@fiscedge.com" class="directLink">
+                <span>📧 Email Consultation</span>
+                <span>alessio.sabatino@fiscedge.com ↗</span>
+            </a>
+            <a href="https://www.alessiosabatino.it/en" target="_blank" class="directLink">
+                <span>🌐 Official Website & Portfolio</span>
+                <span>alessiosabatino.it ↗</span>
+            </a>
+            <a href="https://github.com/buildwithsabba" target="_blank" class="directLink">
+                <span>💻 GitHub Profile & Source Repos</span>
+                <span>@buildwithsabba ↗</span>
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="systemToast" id="systemToast">✓ Telemetry updated</div>
+
+<!-- ==========================================================================
+   THREE.JS 3D MULTI-LAYERED SILICON CHIP ENGINE
+   ========================================================================== */
+-->
+<script>
+/* --- WEB AUDIO HIFI SOUND SYNTHESIZER --- */
+let audioCtx = null;
+let soundOn = true;
+
+function initAudio() {
+    if (!audioCtx) {
+        const AudioClass = window.AudioContext || window.webkitAudioContext;
+        if (AudioClass) audioCtx = new AudioClass();
+    }
+    if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume();
+    }
+}
+
+function playCyberChirp(freq = 1200, dur = 0.06) {
+    if (!audioCtx || !soundOn) return;
+    try {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(freq * 0.4, audioCtx.currentTime + dur);
+        gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + dur);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + dur + 0.01);
+        setTimeout(() => { osc.disconnect(); gain.disconnect(); }, 200);
+    } catch(e) {}
+}
+
+function playPneumaticServo() {
+    if (!audioCtx || !soundOn) return;
+    try {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(220, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(75, audioCtx.currentTime + 0.35);
+        gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.36);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.38);
+        setTimeout(() => { osc.disconnect(); gain.disconnect(); }, 500);
+    } catch(e) {}
+}
+
+/* --- THREE.JS SCENE SETUP --- */
+const canvas = document.getElementById('webglCanvas');
+const scene = new THREE.Scene();
+
+const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+camera.position.set(0, 4.5, 9.5);
+
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+renderer.setSize(window.innerWidth, window.innerHeight);
+
+const controls = new THREE.OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.dampingFactor = 0.05;
+controls.minDistance = 3.5;
+controls.maxDistance = 18;
+controls.target.set(0, 0, 0);
+
+/* --- LIGHTING --- */
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.9);
+scene.add(ambientLight);
+
+const bluePoint = new THREE.PointLight(0x00f0ff, 3.5, 30);
+bluePoint.position.set(5, 8, 6);
+scene.add(bluePoint);
+
+const purplePoint = new THREE.PointLight(0xa855f7, 3.0, 30);
+purplePoint.position.set(-6, -4, -6);
+scene.add(purplePoint);
+
+/* ==========================================================================
+   3D MULTI-LAYERED HOLOGRAPHIC SILICON PROCESSOR
+   ========================================================================== */
+const chipRoot = new THREE.Group();
+scene.add(chipRoot);
+
+let isExploded = false;
+let isOverclocked = false;
+let currentMode = 'ai'; // 'ai', 'fintech', 'fullstack'
+
+// 5 Separate Architectural Chip Layers
+const chipLayers = [];
+
+// LAYER 0: Bottom Titanium Carrier & Gold BGA Balls
+const layer0 = new THREE.Group();
+const substrateGeo = new THREE.BoxGeometry(3.6, 0.15, 3.6);
+const substrateMat = new THREE.MeshStandardMaterial({
+    color: 0x090d16,
+    roughness: 0.2,
+    metalness: 0.9
+});
+const substrate = new THREE.Mesh(substrateGeo, substrateMat);
+layer0.add(substrate);
+
+// Gold Contact Pins (Instanced-like grid)
+const pinGeo = new THREE.CylinderGeometry(0.04, 0.04, 0.1, 6);
+const pinMat = new THREE.MeshStandardMaterial({ color: 0xf59e0b, metalness: 0.9, roughness: 0.1 });
+for (let x = -1.6; x <= 1.6; x += 0.4) {
+    for (let z = -1.6; z <= 1.6; z += 0.4) {
+        if (Math.abs(x) > 1.2 || Math.abs(z) > 1.2) {
+            const pin = new THREE.Mesh(pinGeo, pinMat);
+            pin.position.set(x, -0.1, z);
+            layer0.add(pin);
+        }
+    }
+}
+chipRoot.add(layer0);
+chipLayers.push({ group: layer0, targetY: 0, explodedY: -2.2 });
+
+// LAYER 1: Silicon Die & Laser Matrix Circuits
+const layer1 = new THREE.Group();
+const dieGeo = new THREE.BoxGeometry(2.6, 0.12, 2.6);
+const dieMat = new THREE.MeshStandardMaterial({
+    color: 0x030712,
+    roughness: 0.1,
+    metalness: 0.95
+});
+const die = new THREE.Mesh(dieGeo, dieMat);
+layer1.add(die);
+
+// Circuit lines grid on die
+const gridHelper = new THREE.GridHelper(2.5, 12, 0x00f0ff, 0x1e293b);
+gridHelper.position.y = 0.07;
+layer1.add(gridHelper);
+chipRoot.add(layer1);
+chipLayers.push({ group: layer1, targetY: 0.15, explodedY: -1.0 });
+
+// LAYER 2: Holographic Optical Tensor Vector Core (Glowing Translucent Cube)
+const layer2 = new THREE.Group();
+const coreGeo = new THREE.BoxGeometry(1.6, 0.25, 1.6);
+const coreMat = new THREE.MeshPhysicalMaterial({
+    color: 0x00f0ff,
+    emissive: 0x00f0ff,
+    emissiveIntensity: 0.45,
+    roughness: 0.1,
+    transmission: 0.85,
+    thickness: 0.6,
+    transparent: true,
+    opacity: 0.9
+});
+const coreMesh = new THREE.Mesh(coreGeo, coreMat);
+layer2.add(coreMesh);
+
+// Internal glowing core sphere
+const sphereGeo = new THREE.SphereGeometry(0.35, 24, 24);
+const sphereMat = new THREE.MeshBasicMaterial({ color: 0xffffff, wireframe: true });
+const sphereMesh = new THREE.Mesh(sphereGeo, sphereMat);
+layer2.add(sphereMesh);
+chipRoot.add(layer2);
+chipLayers.push({ group: layer2, targetY: 0.36, explodedY: 0.2 });
+
+// LAYER 3: Concentric Gyroscopic Agentic Orbitals
+const layer3 = new THREE.Group();
+const ring1Geo = new THREE.TorusGeometry(1.5, 0.025, 8, 48);
+const ring1Mat = new THREE.MeshBasicMaterial({ color: 0xa855f7 });
+const ring1 = new THREE.Mesh(ring1Geo, ring1Mat);
+ring1.rotation.x = Math.PI / 2;
+layer3.add(ring1);
+
+const ring2Geo = new THREE.TorusGeometry(1.8, 0.02, 8, 48);
+const ring2Mat = new THREE.MeshBasicMaterial({ color: 0x00f0ff });
+const ring2 = new THREE.Mesh(ring2Geo, ring2Mat);
+ring2.rotation.x = Math.PI / 2;
+layer3.add(ring2);
+chipRoot.add(layer3);
+chipLayers.push({ group: layer3, targetY: 0.52, explodedY: 1.4 });
+
+// LAYER 4: Top Glass Lens & Holographic Protective Cap
+const layer4 = new THREE.Group();
+const capGeo = new THREE.BoxGeometry(2.8, 0.08, 2.8);
+const capMat = new THREE.MeshPhysicalMaterial({
+    color: 0xffffff,
+    metalness: 0.2,
+    roughness: 0.1,
+    transmission: 0.92,
+    transparent: true,
+    opacity: 0.75
+});
+const capMesh = new THREE.Mesh(capGeo, capMat);
+layer4.add(capMesh);
+chipRoot.add(layer4);
+chipLayers.push({ group: layer4, targetY: 0.65, explodedY: 2.6 });
+
+/* --- SURROUNDING FLOATING QUANTUM DATA PARTICLES --- */
+const dataCount = 600;
+const dataGeo = new THREE.BufferGeometry();
+const dataPos = new Float32Array(dataCount * 3);
+for (let i = 0; i < dataCount; i++) {
+    dataPos[i * 3] = (Math.random() - 0.5) * 12;
+    dataPos[i * 3 + 1] = (Math.random() - 0.5) * 8;
+    dataPos[i * 3 + 2] = (Math.random() - 0.5) * 12;
+}
+dataGeo.setAttribute('position', new THREE.BufferAttribute(dataPos, 3));
+const dataMat = new THREE.PointsMaterial({
+    color: 0x00f0ff,
+    size: 0.05,
+    transparent: true,
+    opacity: 0.8,
+    blending: THREE.AdditiveBlending
+});
+const dataCloud = new THREE.Points(dataGeo, dataMat);
+scene.add(dataCloud);
+
+/* ==========================================================================
+   INTERACTIONS & UI LOGIC
+   ========================================================================== */
+const explodeBtn = document.getElementById('explodeBtn');
+const overclockBtn = document.getElementById('overclockBtn');
+const modeBtn = document.getElementById('modeBtn');
+const soundBtn = document.getElementById('soundBtn');
+const contactBtn = document.getElementById('contactBtn');
+const contactModal = document.getElementById('contactModal');
+const closeModalBtn = document.getElementById('closeModalBtn');
+const systemToast = document.getElementById('systemToast');
+
+function showToast(msg) {
+    if (!systemToast) return;
+    systemToast.textContent = msg;
+    systemToast.classList.add('show');
+    setTimeout(() => systemToast.classList.remove('show'), 2400);
+}
+
+// 1. Explode / Assemble 3D Layers
+if (explodeBtn) {
+    explodeBtn.addEventListener('click', () => {
+        initAudio();
+        isExploded = !isExploded;
+        playPneumaticServo();
+        explodeBtn.textContent = isExploded ? '🧬 Assemble Core' : '🔬 Explode 3D Layers';
+        showToast(isExploded ? '✓ 3D Architecture Exploded to 5 Layers' : '✓ Neural Silicon Core Assembled');
+    });
+}
+
+// 2. Overclock AI Core
+if (overclockBtn) {
+    overclockBtn.addEventListener('click', () => {
+        initAudio();
+        isOverclocked = !isOverclocked;
+        playCyberChirp(1600, 0.15);
+        overclockBtn.textContent = isOverclocked ? '⚡ Overclock: 200%' : '⚡ Overclock Core';
+        overclockBtn.style.borderColor = isOverclocked ? '#ef4444' : '';
+        overclockBtn.style.color = isOverclocked ? '#ef4444' : '';
+        showToast(isOverclocked ? '⚡ OVERCLOCK ENGAGED · 8,400 tok/sec' : '✓ Standard Voltage Restored');
+    });
+}
+
+// 3. Switch Architecture Modes
+const modes = [
+    { key: 'ai', name: 'Mode: AI Engine', color: 0x00f0ff, accent: 0xa855f7 },
+    { key: 'fintech', name: 'Mode: FinTech Scale', color: 0x10b981, accent: 0x00f0ff },
+    { key: 'fullstack', name: 'Mode: FullStack SaaS', color: 0xf59e0b, accent: 0xec4899 }
+];
+let modeIdx = 0;
+
+if (modeBtn) {
+    modeBtn.addEventListener('click', () => {
+        initAudio();
+        modeIdx = (modeIdx + 1) % modes.length;
+        const m = modes[modeIdx];
+        document.documentElement.setAttribute('data-mode', m.key);
+        modeBtn.textContent = `🔄 ${m.name}`;
+
+        bluePoint.color.setHex(m.color);
+        purplePoint.color.setHex(m.accent);
+        coreMat.color.setHex(m.color);
+        coreMat.emissive.setHex(m.color);
+        dataMat.color.setHex(m.color);
+
+        playCyberChirp(900, 0.08);
+        showToast(`✓ Switched to ${m.name}`);
+    });
+}
+
+// Contact Modal
+if (contactBtn) contactBtn.addEventListener('click', () => contactModal.classList.add('active'));
+if (closeModalBtn) closeModalBtn.addEventListener('click', () => contactModal.classList.remove('active'));
+
+// Sound toggle
+if (soundBtn) {
+    soundBtn.addEventListener('click', () => {
+        initAudio();
+        soundOn = !soundOn;
+        document.getElementById('soundIcon').textContent = soundOn ? '🔊' : '🔇';
+    });
+}
+
+/* --- DYNAMIC AGENT TERMINAL STREAM --- */
+const terminalLogs = document.getElementById('terminalLogs');
+const agentMessages = [
+    '<span class="tagAgent">[NEXUS-9]</span> Synchronizing vector weights...',
+    '<span class="tagSuccess">[FASTAPI]</span> Serving deterministic sub-agent endpoints.',
+    '<span class="tagAgent">[SUPABASE]</span> Querying pgvector similarity matrix.',
+    '<span class="tagSuccess">[DEPLOY]</span> Production runtime verified: 100% health.',
+    '<span class="tagWarn">[ORCHESTRATOR]</span> Dynamic load rebalancing initiated.',
+    '<span class="tagAgent">[LLM-CORE]</span> Structuring JSON output schema...'
+];
+
+setInterval(() => {
+    if (!terminalLogs) return;
+    const msg = agentMessages[Math.floor(Math.random() * agentMessages.length)];
+    const logEl = document.createElement('div');
+    logEl.className = 'terminalLog';
+    logEl.innerHTML = msg;
+    terminalLogs.appendChild(logEl);
+    if (terminalLogs.children.length > 7) {
+        terminalLogs.removeChild(terminalLogs.children[0]);
+    }
+}, 2400);
+
+/* ==========================================================================
+   ANIMATION & FPS RENDER LOOP
+   ========================================================================== */
+let frameCount = 0;
+let lastTime = performance.now();
+const fpsCounter = document.getElementById('fpsCounter');
+const clock = new THREE.Clock();
+
+function animate() {
+    requestAnimationFrame(animate);
+
+    const time = clock.getElapsedTime();
+    const speed = isOverclocked ? 2.2 : 1.0;
+
+    // FPS calculation
+    frameCount++;
+    const now = performance.now();
+    if (now - lastTime >= 1000) {
+        if (fpsCounter) fpsCounter.textContent = frameCount;
+        frameCount = 0;
+        lastTime = now;
+    }
+
+    // Smooth layer explosion translation
+    chipLayers.forEach((l) => {
+        const destY = isExploded ? l.explodedY : l.targetY;
+        l.group.position.y += (destY - l.group.position.y) * 0.1;
+    });
+
+    // Core rotations
+    chipRoot.rotation.y = time * 0.25 * speed;
+    ring1.rotation.z = time * 0.6 * speed;
+    ring2.rotation.y = time * 0.8 * speed;
+    sphereMesh.rotation.x = time * 1.2 * speed;
+    sphereMesh.rotation.y = time * 0.9 * speed;
+
+    // Data cloud float
+    dataCloud.rotation.y = -time * 0.08;
+
+    controls.update();
+    renderer.render(scene, camera);
+}
+
+animate();
+
+/* --- RESIZE --- */
+window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+});
+</script>
+
+</body>
+</html>
